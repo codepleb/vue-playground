@@ -1,10 +1,41 @@
 const inputComponent = {
-  template: `<input class="input is-small" type="text" />`
-}
+    template: `<input 
+        :placeholder="placeholder"
+        v-model="input"
+        @keyup.enter="monitorEnterKey"
+        class="input is-small"
+        type="text" />`,
+    props: ['placeholder'],
+    data() {
+        return {
+            input: ''
+        }
+    },
+    methods: {
+        monitorEnterKey() {
+            this.$emit('add-note', {
+                note: this.input,
+                timestamp: new Date().toLocaleDateString()
+            });
+            this.input = '';
+        }
+    }
+};
 
 new Vue({
-  el: '#app',
-  components: {
-    'input-component': inputComponent
-  }
-})
+    el: '#app',
+    data: {
+        notes: [],
+        timestamps: [],
+        placeholder: 'Enter a note'
+    },
+    methods: {
+        addNote(event) {
+            this.notes.push(event.note);
+            this.timestamps.push(event.timestamp);
+        }
+    },
+    components: {
+        'input-component': inputComponent
+    },
+});
