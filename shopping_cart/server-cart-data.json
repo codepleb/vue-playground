@@ -26,5 +26,8 @@
         "description": "Stay comfortable and cool with the first Fullstack Fitted Cap, featuring a normal bill and medium crown.",
         "price": 15.99,
         "quantity": 1
+    },
+    {
+        "quantity": 1
     }
 ]
