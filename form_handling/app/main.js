@@ -3,7 +3,32 @@ const InputForm = {
     <div class="input-form">
       <form @submit="submitForm" class="ui form">
         <div class="field">
-          <input v-model="newItem" type="text" placeholder="Add an item!">
+          <label>New Item</label>
+          <input v-model="fields.newItem" type="text"
+                 placeholder="Add an item!"/>
+           <span style="color: red">{{ fieldErrors.newItem }}</span>
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input v-model="fields.email" type="text"
+                 placeholder="What's your email?"/>
+           <span style="color: red">{{ fieldErrors.newItem }}</span>
+        </div>
+        <div class="field">
+          <label>Urgency</label>
+          <select v-model="fields.urgency" class="ui fluid search dropdown">
+            <option disabled value="">Please select one</option>
+            <option>Nonessential</option>
+            <option>Moderate</option>
+            <option>Urgent</option>
+          </select>
+          <span style="color: red">{{ fieldErrors.newItem }}</span>
+        </div>
+        <div class="field">
+          <div class="ui checkbox">
+            <input v-model="fields.termsAndConditions" type="checkbox"/>
+            <label>I accept the terms and conditions</label></div>
+            <span style="color: red">{{ fieldErrors.newItem }}</span>
         </div>
         <button class="ui button">Submit</button>
       </form>
@@ -16,9 +41,19 @@ const InputForm = {
     </div>`,
   data() {
     return {
-      newItem: '',
+      fields: {
+        newItem: '',
+        email: '',
+        urgency: '', termsAndConditions: false
+      },
+      fieldErrors: {
+        newItem: undefined,
+        email: undefined,
+        urgency: undefined,
+        termsAndConditions: undefined
+      },
       items: []
-    };
+    }
   },
   methods: {
     submitForm(evt) {
