@@ -63,7 +63,9 @@ const InputForm = {
         urgency: undefined,
         termsAndConditions: undefined
       },
-      items: []
+      items: [],
+      loading: false,
+      saveStatus: 'READY'
     };
   },
   methods: {
@@ -71,20 +73,31 @@ const InputForm = {
       evt.preventDefault();
       this.fieldErrors = this.validateForm(this.fields);
       if (Object.keys(this.fieldErrors).length) return;
-      this.items.push(this.fields.newItem);
-      this.fields.newItem = '';
-      this.fields.email = '';
-      this.fields.urgency = '';
-      this.fields.termsAndConditions = false;
+      const items = [...this.items, this.fields.newItem];
+      this.saveStatus = 'SAVING'; apiClient.saveItems(items)
+      .then(() => {
+        this.items = items;
+        this.fields.newItem = '';
+        this.fields.email = '';
+        this.fields.urgency = '';
+        this.fields.termsAndConditions = false;
+        this.saveStatus = 'SUCCESS';
+      })
+      .catch((err) => {
+        console.log(err);
+        this.saveStatus = 'ERROR';
+      });
     },
     validateForm(fields) {
       const errors = {};
-      if (!fields.newItem) errors.newItem = "New Item Required"; if (!fields.email) errors.email = "Email Required";
-      if (!fields.urgency) errors.urgency = "Urgency Required"; if (!fields.termsAndConditions) {
-        errors.termsAndConditions = "Terms and conditions have to be approved";
+      if (!fields.newItem) errors.newItem = 'New Item Required';
+      if (!fields.email) errors.email = 'Email Required';
+      if (!fields.urgency) errors.urgency = 'Urgency Required';
+      if (!fields.termsAndConditions) {
+        errors.termsAndConditions = 'Terms and conditions have to be approved';
       }
       if (fields.email && !this.isEmail(fields.email)) {
-        errors.email = "Invalid Email";
+        errors.email = 'Invalid Email';
       }
       return errors;
     },
@@ -101,6 +114,36 @@ const InputForm = {
       return this.fields.urgency === 'Nonessential';
     }
   },
+  created() {
+    this.loading = true,
+      apiClient.loadItems().then((items) => {
+        this.items = items;
+        this.loading = false;
+      });
+  },
+};
+
+let apiClient = {
+  loadItems: function () {
+    return {
+      then: function (cb) {
+        setTimeout(() => {
+          cb(JSON.parse(localStorage.items || '[]'));
+        }, 1000);
+      },
+    };
+  },
+  saveItems: function (items) {
+    const success = !!(this.count++ % 2);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!success) return reject({success});
+        localStorage.items = JSON.stringify(items);
+        return resolve({success});
+      }, 1000);
+    });
+  },
+  count: 1,
 };
 
 new Vue({
