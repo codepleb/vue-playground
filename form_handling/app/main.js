@@ -39,13 +39,32 @@ const InputForm = {
             <label>I accept the terms and conditions</label></div>
             <span style="color: red">{{ fieldErrors.termsAndConditions }}</span>
         </div>
-        <button :disabled="isNewItemInputLimitExceeded || isNotUrgent" class="ui button">
+        <!--<button :disabled="isNewItemInputLimitExceeded || isNotUrgent" class="ui button">-->
+          <!--Submit-->
+        <!--</button>-->
+        <button v-if="saveStatus === 'SAVING'" disabled class="ui button">
+          Saving...
+        </button>
+        <button v-if="saveStatus === 'SUCCESS'"
+                :disabled="isNewItemInputLimitExceeded || isNotUrgent"
+                class="ui button">
+          Saved! Submit another
+        </button>
+        <button v-if="saveStatus === 'ERROR'"
+                :disabled="isNewItemInputLimitExceeded || isNotUrgent"
+                class="ui button">
+          Save Failed - Retry?
+        </button>
+        <button v-if="saveStatus === 'READY'"
+                :disabled="isNewItemInputLimitExceeded || isNotUrgent"
+                class="ui button">
           Submit
         </button>
       </form>
       <div class="ui segment">
         <h4 class="ui header">Items</h4>
         <ul>
+          <div v-if="loading" class="ui active inline loader"></div>
           <li v-for="item in items" class="item">{{ item }}</li>
         </ul>
       </div>
