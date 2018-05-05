@@ -4,10 +4,9 @@ const InputForm = {
       <form @submit="submitForm" class="ui form">
         <div class="field">
           <label>New Item</label>
-          <input v-model="fields.newItem" type="text"
-                 placeholder="Add an item!"/>
+          <input :value="newItem" @input="onInputChange" type="text" placeholder="Add an item!" />
           <span style="float: right">
-            {{ fields.newItem.length }}/20
+            {{ newItem.length }}/20
           </span>
           <span style="color: red">
             {{ fieldErrors.newItem }}
@@ -18,13 +17,12 @@ const InputForm = {
         </div>
         <div class="field">
           <label>Email</label>
-          <input v-model="fields.email" type="text"
-                 placeholder="What's your email?"/>
-           <span style="color: red">{{ fieldErrors.email }}</span>
+          <input :value="email" @input="onInputChange" type="text" placeholder="What's your email?" />
+          <span style="color: red">{{ fieldErrors.email }}</span>
         </div>
         <div class="field">
           <label>Urgency</label>
-          <select v-model="fields.urgency" class="ui fluid search dropdown">
+          <select :value="urgency" @change="onInputChange" class="ui fluid search dropdown">
             <option disabled value="">Please select one</option>
             <option>Nonessential</option>
             <option>Moderate</option>
@@ -35,7 +33,7 @@ const InputForm = {
         </div>
         <div class="field">
           <div class="ui checkbox">
-            <input v-model="fields.termsAndConditions" type="checkbox"/>
+            <input :checked="termsAndConditions" @change="onInputChange" type="checkbox" />
             <label>I accept the terms and conditions</label></div>
             <span style="color: red">{{ fieldErrors.termsAndConditions }}</span>
         </div>
@@ -71,35 +69,24 @@ const InputForm = {
     </div>`,
   data() {
     return {
-      fields: {
-        newItem: '',
-        email: '',
-        urgency: '', termsAndConditions: false
-      },
       fieldErrors: {
         newItem: undefined,
         email: undefined,
         urgency: undefined,
         termsAndConditions: undefined
       },
-      items: [],
-      loading: false,
-      saveStatus: 'READY'
+      loading: false, saveStatus: 'READY'
     };
   },
   methods: {
     submitForm(evt) {
       evt.preventDefault();
-      this.fieldErrors = this.validateForm(this.fields);
+      this.fieldErrors = this.validateForm(this.$store.state.fields);
       if (Object.keys(this.fieldErrors).length) return;
-      const items = [...this.items, this.fields.newItem];
-      this.saveStatus = 'SAVING'; apiClient.saveItems(items)
-      .then(() => {
-        this.items = items;
-        this.fields.newItem = '';
-        this.fields.email = '';
-        this.fields.urgency = '';
-        this.fields.termsAndConditions = false;
+      const items = [...this.$store.state.items, this.$store.state.fields.newItem
+      ];
+      this.saveStatus = 'SAVING';
+      this.$store.dispatch('saveItems', items).then(() => {
         this.saveStatus = 'SUCCESS';
       })
       .catch((err) => {
@@ -123,50 +110,41 @@ const InputForm = {
     isEmail(email) {
       const re = /\S+@\S+\.\S+/;
       return re.test(email);
-    }
-  },
-  computed: { // computed > methods, because only reevaluated if dependencies change
-    isNewItemInputLimitExceeded() {
-      return this.fields.newItem.length >= 20;
     },
-    isNotUrgent() {
-      return this.fields.urgency === 'Nonessential';
-    }
+    onInputChange(evt) {
+      const element = evt.target;
+      const value =
+        element.name === 'TERMS_AND_CONDITIONS'
+          ? element.checked
+          : element.value;
+      this.$store.commit(`UPDATE_${element.name}`, value);
+    },
   },
+  computed: Vuex.mapGetters({
+    newItem: 'newItem',
+    newItemLength: 'newItemLength',
+    isNewItemInputLimitExceeded: 'isNewItemInputLimitExceeded',
+    email: 'email',
+    urgency: 'urgency',
+    isNotUrgent: 'isNotUrgent',
+    termsAndConditions: 'termsAndConditions',
+    items: 'items'
+  }),
   created() {
-    this.loading = true,
-      apiClient.loadItems().then((items) => {
-        this.items = items;
-        this.loading = false;
-      });
-  },
-};
-
-let apiClient = {
-  loadItems: function () {
-    return {
-      then: function (cb) {
-        setTimeout(() => {
-          cb(JSON.parse(localStorage.items || '[]'));
-        }, 1000);
-      },
-    };
-  },
-  saveItems: function (items) {
-    const success = !!(this.count++ % 2);
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (!success) return reject({success});
-        localStorage.items = JSON.stringify(items);
-        return resolve({success});
-      }, 1000);
+    this.loading = true;
+    this.$store.dispatch('loadItems')
+    .then((response) => {
+      this.loading = false;
+    })
+    .catch((error) => {
+      console.log(error);
     });
   },
-  count: 1,
 };
 
 new Vue({
   el: '#app',
+  store,
   components: {
     'input-form': InputForm
   }
