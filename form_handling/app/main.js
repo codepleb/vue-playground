@@ -4,7 +4,7 @@ const InputForm = {
       <form @submit="submitForm" class="ui form">
         <div class="field">
           <label>New Item</label>
-          <input :value="newItem" @input="onInputChange" type="text" placeholder="Add an item!" />
+          <input :value="newItem" name="NEW_ITEM" @input="onInputChange" type="text" placeholder="Add an item!" />
           <span style="float: right">
             {{ newItem.length }}/20
           </span>
@@ -17,12 +17,12 @@ const InputForm = {
         </div>
         <div class="field">
           <label>Email</label>
-          <input :value="email" @input="onInputChange" type="text" placeholder="What's your email?" />
+          <input :value="email" name="EMAIL" @input="onInputChange" type="text" placeholder="What's your email?" />
           <span style="color: red">{{ fieldErrors.email }}</span>
         </div>
         <div class="field">
           <label>Urgency</label>
-          <select :value="urgency" @change="onInputChange" class="ui fluid search dropdown">
+          <select :value="urgency" name="URGENCY" @change="onInputChange" class="ui fluid search dropdown">
             <option disabled value="">Please select one</option>
             <option>Nonessential</option>
             <option>Moderate</option>
@@ -33,7 +33,7 @@ const InputForm = {
         </div>
         <div class="field">
           <div class="ui checkbox">
-            <input :checked="termsAndConditions" @change="onInputChange" type="checkbox" />
+            <input :checked="termsAndConditions" name="TERMS_AND_CONDITIONS" @change="onInputChange" type="checkbox" />
             <label>I accept the terms and conditions</label></div>
             <span style="color: red">{{ fieldErrors.termsAndConditions }}</span>
         </div>
