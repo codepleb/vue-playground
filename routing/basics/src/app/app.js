@@ -52,9 +52,20 @@ const View = {
     };
   },
   created() {
-    this.currentView = routes.find(
-      route => route.path === window.location.pathname
-    ).component;
+    if (this.getRouteObject() === undefined) {
+      this.currentView = {
+        template: `<h2>Not Found :(. Pick a movie from the list!</h2>`
+      };
+    } else {
+      this.currentView = this.getRouteObject().component;
+    }
+  },
+  methods: {
+    getRouteObject() {
+      return routes.find(
+        route => route.path === window.location.pathname
+      );
+    }
   }
 };
 
