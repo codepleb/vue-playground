@@ -1,11 +1,11 @@
 import Vue from 'vue';
-import App from './app-complete/App.vue';
-import store from './app-complete/store';
-import router from './app-complete/router';
+import App from './app/App.vue';
+import store from './app/store';
+// import router from './app/router';
 
 new Vue({
   el: '#app',
   store,
-  router,
+  // router,
   render: h => h(App)
 });
