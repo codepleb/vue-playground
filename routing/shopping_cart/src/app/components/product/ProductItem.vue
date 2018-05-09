@@ -1,5 +1,5 @@
 <template>
-  <section id="product-item" class="box">
+  <section id="product-item" class="box" v-if="productItem">
     <span class="return-icon" @click="$router.go(-1)">
       <i class="fa fa-arrow-left is-primary"></i>
     </span>
