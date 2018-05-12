@@ -13,14 +13,24 @@ const router = new VueRouter({
   routes: [
     {
       path: '/login',
-      component: LoginBox
+      component: LoginBox,
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('token');
+        if (token) next('/products');
+        else next();
+      }
     }, {
       path: '/products',
       component: ProductList
     }, {
       path: '/products/:id',
       component: ProductItem,
-      props: true
+      props: true,
+      beforeEnter: (to, from, next) => {
+        const id = to.params.id;
+        if (![1, 2, 3, 4].includes(Number(id))) next('/not-found');
+        else next();
+      }
     }, {
       path: '/cart',
       component: CartList
@@ -35,7 +45,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
   if (!token && to.path !== '/login') next('/login');
   else next();
 });
