@@ -8,7 +8,12 @@
 
 <script>
   export default {
-    name: 'LoginBox',
+    name: 'Login',
+    computed: {
+      ...mapGetters([
+        'loading',
+      ])
+    },
     methods: {
       login() {
         this.$store.dispatch('login').then(() => {

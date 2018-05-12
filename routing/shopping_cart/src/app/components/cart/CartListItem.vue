@@ -21,6 +21,7 @@
   </div>
 </template>
 
+
 <script>
   import {mapActions} from 'vuex';
 
@@ -35,6 +36,7 @@
     }
   };
 </script>
+
 
 <style scoped>
   .box {
