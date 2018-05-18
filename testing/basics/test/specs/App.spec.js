@@ -1,29 +1,64 @@
-import Vue from 'vue';
-// @ == import relatively to the source of the app
 import App from '@/App';
+import {shallow} from 'vue-test-utils';
 
 describe('App.vue', () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = shallow(App);
+  });
 
   it('should render correct contents', () => {
-    const Constructor = Vue.extend(App);
-    const vm = new Constructor().$mount();
-    expect(
-      vm.$el.querySelector('.ui.selectable thead tr th').textContent
-    ).to.contain('Items');
-    expect(
-      vm.$el.querySelector('.ui.button').textContent
-    ).to.contain('Add');
-    expect(
-      vm.$el.querySelector('.ui.label').textContent
-    ).to.contain('Remove all');
+    expect(wrapper.html()).to.contain('<th>Items</th>');
+    expect(wrapper.html()).to.contain(
+      '<input type="text" placeholder="Add item..." value="" class="prompt">'
+    );
+    expect(wrapper.html()).to.contain(
+      '<button type="submit" disabled="disabled" class="ui button">Add</button>'
+    );
+    expect(wrapper.html()).to.contain(
+      '<span class="ui label">Remove all</span>'
+    );
   });
 
   it('should set correct default data', () => {
-    const initialData = App.data();
+    expect(wrapper.vm.item).to.equal('');
+    expect(wrapper.vm.items).to.deep.equal([]);
+  });
 
-    expect(initialData.item).to.equal('');
-    // 'deep' checks for equality, not object references
-    expect(initialData.items).to.deep.equal([]);
+  it('should have the "Add" button disabled', () => {
+    const addItemButton = wrapper.find('.ui.button');
+
+    expect(addItemButton.element.disabled).to.be.true;
+  });
+
+  describe('the user populates the text input field', () => {
+    let inputField;
+
+    beforeEach(() => {
+      inputField = wrapper.find('input');
+      inputField.element.value = 'New Item';
+      inputField.trigger('input');
+    });
+
+    it('should update the "text" data property', () => {
+      expect(wrapper.vm.item).to.equal('New Item');
+    });
+
+    it('should enable the "Add" button when text input is populated', () => {
+      const addItemButton = wrapper.find('.ui.button');
+      expect(addItemButton.element.disabled).to.be.false;
+    });
+
+    describe('and then clears the input', () => {
+      it('should disable the "Add" button', () => {
+        const addItemButton = wrapper.find('.ui.button');
+        inputField.element.value = '';
+        inputField.trigger('input');
+        expect(addItemButton.element.disabled).to.be.true;
+      });
+    });
+
   });
 
 });
