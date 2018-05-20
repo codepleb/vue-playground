@@ -59,6 +59,23 @@ describe('App.vue', () => {
       });
     });
 
+    describe('and then submits the form', () => {
+      let addItemButton;
+
+      beforeEach(() => {
+        wrapper.setData({item: 'New Item'});
+        addItemButton = wrapper.find('.ui.button');
+        addItemButton.trigger('click');
+      });
+
+      it('should add a new item to the "items" data property', () => {
+        const itemList = wrapper.find('.item-list');
+        expect(wrapper.vm.items).to.contain('New Item');
+        expect(itemList.html()).to.contain('<td>New Item</td>');
+      });
+
+    });
+
   });
 
 });
