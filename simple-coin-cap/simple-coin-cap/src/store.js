@@ -50,7 +50,7 @@ export default new Vuex.Store({
     }
   },
   // Help compute store state, tha components can directly retrieve
-  getter: {
+  getters: {
     coins: state => state.coins,
     totalMarketCap: state => state.totalMarketCap,
     total24HrVolume: state => state.total24HrVolume,
