@@ -16,6 +16,7 @@
             id="v-select"
             placeholder="Search..."
             :options="coins"
+            @input="selectCoin"
             label="name"
           >
             <template slot="option" slot-scope="option">
@@ -40,6 +41,13 @@
       ...mapGetters([
         'coins'
       ])
+    },
+    methods: {
+      selectCoin(val) {
+        if (val){
+          this.$router.push(`/currency/${val.website_slug}`);
+        }
+      }
     }
   }
   name: 'AppHeader'
