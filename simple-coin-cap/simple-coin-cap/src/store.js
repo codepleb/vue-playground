@@ -55,6 +55,9 @@ export default new Vuex.Store({
     totalMarketCap: state => state.totalMarketCap,
     total24HrVolume: state => state.total24HrVolume,
     totalBTCPercentage: state => state.totalBTCPercentage,
-    loading: state => state.loading
+    loading: state => state.loading,
+    coinDataFromSlug: (state) => (websiteSlug) => {
+      return state.coins.find(coin => coin.website_slug === websiteSlug);
+    }
   }
 })
