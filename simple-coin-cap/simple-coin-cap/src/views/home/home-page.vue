@@ -1,6 +1,7 @@
 <template>
   <div class="home">
-    <div class="ui grid">
+    <div v-if="loading" class="ui active large loader"></div>
+    <div v-if="!loading" class="ui grid">
       <div class="sixteen wide column coin-market">
         <div class="ui three column grid">
           <div class="column">
@@ -58,6 +59,7 @@
         'totalMarketCap',
         'total24HrVolume',
         'totalBTCPercentage',
+        'loading'
       ])
     },
     components: {
