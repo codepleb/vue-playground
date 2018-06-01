@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    // start only for production
     "start": "node server.js",
     "start-dev": "concurrently \"node server.js\" \"npm run serve\"",
     "serve": "vue-cli-service serve --open",
@@ -11,6 +10,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "connect-history-api-fallback": "^1.5.0",
     "express": "^4.16.3",
     "semantic-ui-css": "^2.3.0",
     "vue": "^2.5.16",

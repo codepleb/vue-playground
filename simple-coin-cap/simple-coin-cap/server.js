@@ -1,13 +1,17 @@
 const express = require('express');
 const axios = require('axios');
+const path = require('path');
+const history = require('connect-history-api-fallback');
 
 const app = express();
 
 app.set('port', process.env.PORT || 3000);
 
 if (process.env.NODE_ENV === 'production') {
+  // Enables 'external' routing
+  app.use(history());
   // Middleware, only static files
-  app.use(express.static(path.join(__dirname, '/dist')))
+  app.use(express.static(path.join(__dirname, '/dist')));
 }
 
 app.get('/api/coins', function(req, res) {
