@@ -5,6 +5,11 @@ const app = express();
 
 app.set('port', process.env.PORT || 3000);
 
+if (process.env.NODE_ENV === 'production') {
+  // Middleware, only static files
+  app.use(express.static(path.join(__dirname, '/dist')))
+}
+
 app.get('/api/coins', function(req, res) {
   axios.get('https://api.coinmarketcap.com/v2/ticker/?limit=100')
     .then(function(response) {
