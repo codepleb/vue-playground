@@ -1,8 +1,11 @@
 <template>
   <div class="ui top attached menu">
-    <div class="item name">
+    <router-link
+      to="/"
+      class="item name"
+    >
       SimpleCoinCap
-    </div>
+    </router-link>
     <router-link
       to="/"
       class="ui icon item"
