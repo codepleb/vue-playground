@@ -4,8 +4,28 @@ import HomePage from '@/views/home/home-page.vue'
 import CoinDetailsPage from '@/views/coin-details/coin-details-page';
 import AboutPage from '@/views/about/about-page.vue';
 import NotFoundPage from '@/views/not-found/not-found.vue';
+import store from '@/store';
 
 Vue.use(Router);
+
+const checkIfCoinExists = (to, from, next) => {
+  const slug = to.params.slug;
+  const coins = store.getters.coins;
+
+  if (!coins.length) {
+    store.watch(
+      state => state.coins,
+      () => {
+        if (store.getters.coinDataFromSlug(slug)) next();
+        else next('/not-found');
+      }
+    )
+  } else {
+    if (store.getters.coinDataFromSlug(slug)) next();
+    else next('/not-found');
+  }
+};
+
 
 export default new Router({
   mode: 'history',
@@ -17,11 +37,11 @@ export default new Router({
     },
     {
       path: '/about',
-      name: '/about',
+      name: '/AboutPage',
       component: AboutPage
     },
     {
-      path: '/*',
+      path: '*',
       name: '/NotFoundPage',
       component: NotFoundPage
     },
@@ -30,6 +50,7 @@ export default new Router({
       name: 'CoinDetailsPage',
       component: CoinDetailsPage,
       props: true,  // Enable access to 'slug'
+      beforeEnter: checkIfCoinExists
     }
   ]
 })
